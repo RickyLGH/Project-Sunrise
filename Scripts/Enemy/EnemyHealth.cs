@@ -8,7 +8,10 @@ namespace CompleteProject
         public int currentHealth;                   // The current health the enemy has.
         public float sinkSpeed = 2.5f;              // The speed at which the enemy sinks through the floor when dead.
         public int scoreValue = 10;                 // The amount added to the player's score when the enemy dies.
-        public AudioClip deathClip;                 // The sound to play when the enemy dies.
+        public AudioClip deathClip;   				// The sound to play when the enemy dies.
+		public GameObject Loot;
+		public Transform HealthSpawn;
+		public float dropRate = 0.25f;
 
         Animator anim;                              // Reference to the animator.
         AudioSource enemyAudio;                     // Reference to the audio source.
@@ -17,6 +20,7 @@ namespace CompleteProject
         EnemyMovement enemyMovement;
         bool isDead;                                // Whether the enemy is dead.
         bool isSinking;                             // Whether the enemy has started sinking through the floor.
+
 
         void Awake ()
         {
@@ -68,7 +72,6 @@ namespace CompleteProject
                 Death ();
             }
         }
-
         public void Shot(int amount, Vector3 hitPoint)
         {
             // If the enemy is dead...
@@ -98,6 +101,9 @@ namespace CompleteProject
 
         void Death ()
         {
+			if (Random.Range (0f, 1f) <= dropRate)
+				Instantiate (Loot, HealthSpawn.position, HealthSpawn.rotation);
+
             // The enemy is dead.
             isDead = true;
 
