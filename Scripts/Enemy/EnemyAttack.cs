@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace CompleteProject
 {
-	public class EnemyAttack : MonoBehaviour
+    public class EnemyAttack : MonoBehaviour
     {
         public float timeBetweenAttacks = 0.5f;     // The time in seconds between each attack.
         public int attackDamage = 10;               // The amount of health taken away per attack.
@@ -17,17 +17,27 @@ namespace CompleteProject
         public bool fireDamage;
         public bool earthDamage;
         float timer;                                // Timer for counting up to the next attack.
+        public PlayerShield Ps;
+        [SerializeField]
+        private GameObject[] targets;
+        private GameObject playerToAtk;
 
-        void Awake ()
+        void Awake()
         {
             // Setting up the references.
             enemyHealth = GetComponent<EnemyHealth>();
             enemyMovement = GetComponent<EnemyMovement>();
-            anim = GetComponent <Animator> ();
+            anim = GetComponent<Animator>();
+            targets = new GameObject[3];
+            targets[0] = GameObject.FindGameObjectWithTag("Ice");
+            targets[1] = GameObject.FindGameObjectWithTag("Fire");
+            targets[2] = GameObject.FindGameObjectWithTag("Earth");
+            playerToAtk = targets[Random.Range(0, targets.Length)];
+            Ps = playerToAtk.GetComponent<PlayerShield>();
         }
 
 
-        void OnTriggerEnter (Collider other)
+        void OnTriggerEnter(Collider other)
         {
             // If the entering collider is the player...
             if (other.gameObject.tag == "Ice")
@@ -37,7 +47,7 @@ namespace CompleteProject
                 iceDamage = true;
                 fireDamage = false;
                 earthDamage = false;
-                
+
             }
             if (other.gameObject.tag == "Fire")
             {
@@ -57,7 +67,7 @@ namespace CompleteProject
             }
         }
 
-        void OnTriggerExit (Collider other)
+        void OnTriggerExit(Collider other)
         {
             // If the entering collider is the player...
             if (other.gameObject.tag == "Fire")
@@ -81,9 +91,9 @@ namespace CompleteProject
         }
 
 
-        void Update ()
+        void Update()
         {
-			anim.SetBool ("Frozen", enemyMovement.frozen);
+            anim.SetBool("Frozen", enemyMovement.frozen);
 
             // Add the time since Update was last called to the timer.
             timer += Time.deltaTime;
@@ -92,40 +102,48 @@ namespace CompleteProject
             if (timer >= timeBetweenAttacks && playerInRange && enemyHealth.currentHealth > 0)
             {
                 // ... attack.
-                Attack ();
+                Attack();
             }
 
             // If the player has zero or less health...
-            if(!HealthManager.instance.allPlayersAlive)
+            if (!HealthManager.instance.allPlayersAlive)
             {
                 // ... tell the animator the player is dead.
-                anim.SetTrigger ("PlayerDead");
+                anim.SetTrigger("PlayerDead");
             }
         }
-
-        void Attack ()
+        void Attack()
         {
             // Reset the timer.
             timer = 0f;
-
-            // If the player has health to lose...
-            if(HealthManager.instance.allPlayersAlive && iceDamage == true)
+            if (Ps.Orb == true)
             {
-                HealthManager.instance.iceHealth.TakeDamage(attackDamage);
-                HealthManager.instance.CheckUp ();
+                attackDamage = 3;
             }
-
-            if (HealthManager.instance.allPlayersAlive && fireDamage == true)
+            if (Ps.Orb == false)
             {
-                HealthManager.instance.fireHealth.TakeDamage(attackDamage);
-				HealthManager.instance.CheckUp ();
-            }
+                attackDamage = 10;
+                // If the player has health to lose...
 
-            if (HealthManager.instance.allPlayersAlive && earthDamage == true)
-            {
-                HealthManager.instance.earthHealth.TakeDamage(attackDamage);
-				HealthManager.instance.CheckUp ();
+                if (HealthManager.instance.allPlayersAlive && iceDamage == true)
+                {
+                    HealthManager.instance.iceHealth.TakeDamage(attackDamage);
+                    HealthManager.instance.CheckUp();
+                }
+
+                if (HealthManager.instance.allPlayersAlive && fireDamage == true)
+                {
+                    HealthManager.instance.fireHealth.TakeDamage(attackDamage);
+                    HealthManager.instance.CheckUp();
+                }
+
+                if (HealthManager.instance.allPlayersAlive && earthDamage == true)
+                {
+                    HealthManager.instance.earthHealth.TakeDamage(attackDamage);
+                    HealthManager.instance.CheckUp();
+                }
+
             }
         }
-    }
+    } 
 }
