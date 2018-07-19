@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 6e262ad9777294414ae39b96ab6ce099
+timeCreated: 1518311885
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: DISKOPIA2.0
+  fontNames:
+  - DISKOPIA2.0
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
